@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Produtos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .produtos {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            list-style-type: none;
+            padding: 0;
+            max-width: 1200px;
+            margin: 20px auto;
+        }
+        .produto {
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+            flex: 1 0 21%; /* Ajusta o tamanho dos cards para caberem 4 por linha */
+            margin: 1%;
+            max-width: 22%;
+            display: flex;
+            flex-direction: column;
+        }
+        .produto:hover {
+            transform: translateY(-5px);
+        }
+        .produto img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-bottom: 1px solid #ccc;
+            object-fit: cover;
+            margin: -10px -10px 10px; /* Adiciona margens ao redor da imagem */
+        }
+        .produto .descricao {
+            padding: 10px;
+            flex-grow: 1;
+        }
+        .produto h2 {
+            margin: 0 0 10px 0;
+            font-size: 1.2em;
+            color: #007bff;
+        }
+        .produto a {
+            display: inline-block;
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .produto a:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Aqui estão todos os produtos! =)</h1>
+
+    <ul class="produtos" id="listaProdutos">
+        <!-- Produtos serão carregados dinamicamente aqui -->
+    </ul>
+
+    <script>
+        // Carrega os produtos armazenados em localStorage
+        var produtos = JSON.parse(localStorage.getItem('produtos')) || [];
+        var listaProdutos = document.getElementById('listaProdutos');
+
+        // Adiciona cada produto à lista de produtos
+        produtos.forEach(function(produto) {
+            var produtoItem = document.createElement('li');
+            produtoItem.classList.add('produto');
+
+            var produtoHTML = `
+                <img src="${produto.imagem}" alt="${produto.nome}">
+                <div class="descricao">
+                    <h2>${produto.nome}</h2>
+                    <a href="${produto.link}" target="_blank">Ver Produto</a>
+                </div>
+            `;
+
+            produtoItem.innerHTML = produtoHTML;
+            listaProdutos.appendChild(produtoItem);
+        });
+    </script>
+
+</body>
+</html>

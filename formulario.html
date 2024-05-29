@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adicionar Produto</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: auto;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            border: none;
+            color: #fff;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .product-list {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .product-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #ccc;
+        }
+        .product-item:last-child {
+            border-bottom: none;
+        }
+        .product-item img {
+            max-width: 50px;
+            margin-right: 10px;
+        }
+        .product-item button {
+            padding: 5px 10px;
+            background-color: #dc3545;
+            border: none;
+            color: #fff;
+            font-size: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .product-item button.edit {
+            background-color: #ffc107;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<form id="formulario">
+    <label for="nome">Nome do Produto:</label>
+    <input type="text" id="nome" name="nome" required>
+
+    <label for="imagem">URL da Imagem:</label>
+    <input type="url" id="imagem" name="imagem" required>
+
+    <label for="link">Link do Produto:</label>
+    <input type="url" id="link" name="link" required>
+
+    <button type="submit">Adicionar Produto</button>
+</form>
+
+<div class="product-list" id="product-list"></div>
+
+<script>
+    // Função para renderizar a lista de produtos
+    function renderProdutos() {
+        var produtos = JSON.parse(localStorage.getItem('produtos')) || [];
+        var productList = document.getElementById('product-list');
+        productList.innerHTML = '';
+
+        produtos.forEach(function(produto, index) {
+            var productItem = document.createElement('div');
+            productItem.className = 'product-item';
+            
+            productItem.innerHTML = `
+                <div>
+                    <img src="${produto.imagem}" alt="${produto.nome}">
+                    <a href="${produto.link}" target="_blank">${produto.nome}</a>
+                </div>
+                <div>
+                    <button class="edit" onclick="editarProduto(${index})">Editar</button>
+                    <button onclick="deletarProduto(${index})">Excluir</button>
+                </div>
+            `;
+            productList.appendChild(productItem);
+        });
+    }
+
+    // Função para lidar com o envio do formulário
+    document.getElementById('formulario').addEventListener('submit', function(event) {
+        event.preventDefault(); // Evita que o formulário seja enviado
+
+        // Coleta os valores do formulário
+        var nome = document.getElementById('nome').value;
+        var imagem = document.getElementById('imagem').value;
+        var link = document.getElementById('link').value;
+
+        // Salva os detalhes do produto em localStorage
+        var produtos = JSON.parse(localStorage.getItem('produtos')) || [];
+        produtos.push({ nome: nome, imagem: imagem, link: link });
+        localStorage.setItem('produtos', JSON.stringify(produtos));
+
+        // Limpa os campos do formulário
+        document.getElementById('formulario').reset();
+        
+        // Atualiza a lista de produtos
+        renderProdutos();
+        
+        alert('Produto adicionado com sucesso!');
+    });
+
+    // Função para deletar um produto
+    function deletarProduto(index) {
+        var produtos = JSON.parse(localStorage.getItem('produtos')) || [];
+        produtos.splice(index, 1);
+        localStorage.setItem('produtos', JSON.stringify(produtos));
+        renderProdutos();
+        alert('Produto excluído com sucesso!');
+    }
+
+    // Função para editar um produto
+    function editarProduto(index) {
+        var produtos = JSON.parse(localStorage.getItem('produtos')) || [];
+        var produto = produtos[index];
+
+        document.getElementById('nome').value = produto.nome;
+        document.getElementById('imagem').value = produto.imagem;
+        document.getElementById('link').value = produto.link;
+
+        deletarProduto(index);
+    }
+
+    // Renderiza a lista de produtos ao carregar a página
+    renderProdutos();
+</script>
+
+</body>
+</html>
